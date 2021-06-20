@@ -17,7 +17,7 @@ public class PathFinder : MonoBehaviour
     {
         GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
         StartPosition = enemy.transform;
-        nrooms = BoardManager.nroomsPublic;
+        nrooms = BoardManager.nRoomsPublic;
         GridReference = GetComponent<Grid>();
     }
 
