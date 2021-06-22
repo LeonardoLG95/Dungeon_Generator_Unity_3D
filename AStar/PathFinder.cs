@@ -17,7 +17,8 @@ public class PathFinder : MonoBehaviour
     {
         GameObject enemy = GameObject.FindGameObjectWithTag("Enemy");
         StartPosition = enemy.transform;
-        nrooms = BoardManager.nRoomsPublic;
+        //This was not set, I guess number of rooms should be public static for A path read this value
+        //nrooms = BoardManager.N;
         GridReference = GetComponent<Grid>();
     }
 

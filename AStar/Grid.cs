@@ -36,14 +36,14 @@ public class Grid : MonoBehaviour
 
         for(int r = 0; r < boardn; r++)
         {
-            NodeArray.Add(new Node[BoardManager.dimension, BoardManager.dimension]);
+            NodeArray.Add(new Node[BoardManager.Dimension, BoardManager.Dimension]);
 
             Debug.Log("Entra en el for");
 
-            for (int x = (int)BoardManager.usedPositions[r].x; x < (int)BoardManager.usedPositions[r].x + BoardManager.dimension; x++)
+            for (int x = (int)BoardManager.Positions[r].x; x < (int)BoardManager.Positions[r].x + BoardManager.Dimension; x++)
             {
                 if (xnabool) xna++;
-                for (int y = (int)BoardManager.usedPositions[boardn].y; y < (int)BoardManager.usedPositions[boardn].y + BoardManager.dimension; y++)
+                for (int y = (int)BoardManager.Positions[boardn].y; y < (int)BoardManager.Positions[boardn].y + BoardManager.Dimension; y++)
                 {
                     if (ynabool) yna++;
                     Vector3 worldPoint = new Vector3(x, y, 0);
@@ -76,30 +76,30 @@ public class Grid : MonoBehaviour
 
         icheckX = a_NeighborNode.iGridX + 1;
         icheckY = a_NeighborNode.iGridY;
-        if (icheckX >= 0 && icheckX < BoardManager.dimension)
+        if (icheckX >= 0 && icheckX < BoardManager.Dimension)
         {
-            if (icheckY >= 0 && icheckY < BoardManager.dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
+            if (icheckY >= 0 && icheckY < BoardManager.Dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
         }
 
         icheckX = a_NeighborNode.iGridX - 1;
         icheckY = a_NeighborNode.iGridY;
-        if (icheckX >= 0 && icheckX < BoardManager.dimension)
+        if (icheckX >= 0 && icheckX < BoardManager.Dimension)
         {
-            if (icheckY >= 0 && icheckY < BoardManager.dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
+            if (icheckY >= 0 && icheckY < BoardManager.Dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
         }
 
         icheckX = a_NeighborNode.iGridX;
         icheckY = a_NeighborNode.iGridY + 1;
-        if (icheckX >= 0 && icheckX < BoardManager.dimension)
+        if (icheckX >= 0 && icheckX < BoardManager.Dimension)
         {
-            if (icheckY >= 0 && icheckY < BoardManager.dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
+            if (icheckY >= 0 && icheckY < BoardManager.Dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
         }
 
         icheckX = a_NeighborNode.iGridX;
         icheckY = a_NeighborNode.iGridY - 1;
-        if (icheckX >= 0 && icheckX < BoardManager.dimension)
+        if (icheckX >= 0 && icheckX < BoardManager.Dimension)
         {
-            if (icheckY >= 0 && icheckY < BoardManager.dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
+            if (icheckY >= 0 && icheckY < BoardManager.Dimension) NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
         }
 
         for (int x = -1; x <= 1; x++)
@@ -111,7 +111,7 @@ public class Grid : MonoBehaviour
                 icheckX = a_NeighborNode.iGridX + x;
                 icheckY = a_NeighborNode.iGridY + y;
 
-                if (icheckX >= 0 && icheckX < BoardManager.dimension && icheckY >= 0 && icheckY < BoardManager.dimension)
+                if (icheckX >= 0 && icheckX < BoardManager.Dimension && icheckY >= 0 && icheckY < BoardManager.Dimension)
                 {
                     NeighborList.Add(NodeArray[gridN][icheckX, icheckY]);
                 }
@@ -122,14 +122,14 @@ public class Grid : MonoBehaviour
 
     public Node NodeFromWorldPoint(Vector3 a_vWorldPos, int gridN)
     {
-        float ixPos = (a_vWorldPos.x + BoardManager.dimension / 2) / BoardManager.dimension;
-        float iyPos = (a_vWorldPos.y + BoardManager.dimension / 2) / BoardManager.dimension;
+        float ixPos = (a_vWorldPos.x + BoardManager.Dimension / 2) / BoardManager.Dimension;
+        float iyPos = (a_vWorldPos.y + BoardManager.Dimension / 2) / BoardManager.Dimension;
 
         ixPos = Mathf.Clamp01(ixPos);
         iyPos = Mathf.Clamp01(iyPos);
 
-        int ix = Mathf.RoundToInt((BoardManager.dimension - 1) * ixPos);
-        int iy = Mathf.RoundToInt((BoardManager.dimension - 1) * iyPos);
+        int ix = Mathf.RoundToInt((BoardManager.Dimension - 1) * ixPos);
+        int iy = Mathf.RoundToInt((BoardManager.Dimension - 1) * iyPos);
 
         return NodeArray[gridN][ix, iy];
     }
