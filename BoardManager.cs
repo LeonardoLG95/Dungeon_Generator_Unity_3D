@@ -58,13 +58,25 @@ public class BoardManager : MonoBehaviour
         Positions.Add(_newPosition);
 
         //Calculate position of rooms and doors
-        for (int r = 0; r < _nRooms; r++){
+        for (int r = 0; r < _nRooms - 1; r++){
             //Side where will be instantiate the rooms (first in Vector3.zero)
             int rn = Random.Range(0, 4);
+            bool coincidence = false;
             switch (rn){
                 case 0: //Left
                     _newPosition.Set(_newPosition.x - _columns, 0, _newPosition.z);
-                    if(r != _nRooms - 1){
+                    for(int i=0; i < Positions.Count; i++){
+                        Debug.Log($"Value of i (left) : {i}");
+                        if(_newPosition == Positions[i]){
+                            coincidence = true;
+                            break;
+                        }
+                    }
+                    if(coincidence){
+                        r -= 1;
+                        break;
+                    }
+                    else if(r != _nRooms - 1){
                         int sideRight = Random.Range((int)_newPosition.z + 2, (int)_newPosition.z + _rows - 2);
                         _doors.Add(new Vector3(_newPosition.x + _columns - 1, 0, sideRight));
                         _doors.Add(new Vector3(_newPosition.x + _columns, 0, sideRight));
@@ -73,7 +85,18 @@ public class BoardManager : MonoBehaviour
 
                 case 1: //Right
                     _newPosition.Set(_newPosition.x + _columns, 0, _newPosition.z);
-                    if (r != _nRooms - 1){
+                    for(int i=0; i < Positions.Count; i++){
+                        Debug.Log($"Value of i (left) : {i}");
+                        if(_newPosition == Positions[i]){
+                            coincidence = true;
+                            break;
+                        }
+                    }
+                    if(coincidence){
+                        r -= 1;
+                        break;
+                    }
+                    else if(r != _nRooms - 1){
                         int sideLeft = Random.Range((int)_newPosition.z + 2, (int)_newPosition.z + _rows - 2);
                         _doors.Add(new Vector3(_newPosition.x, 0, sideLeft));
                         _doors.Add(new Vector3(_newPosition.x - 1, 0, sideLeft));
@@ -82,7 +105,18 @@ public class BoardManager : MonoBehaviour
 
                 case 2: //Up
                     _newPosition.Set(_newPosition.x, 0, _newPosition.z + _rows);
-                    if (r != _nRooms - 1){
+                    for(int i=0; i < Positions.Count; i++){
+                        Debug.Log($"Value of i (left) : {i}");
+                        if(_newPosition == Positions[i]){
+                            coincidence = true;
+                            break;
+                        }
+                    }
+                    if(coincidence){
+                        r -= 1;
+                        break;
+                    }
+                    else if(r != _nRooms - 1){
                         int sideDown = Random.Range((int)_newPosition.x + 2, (int)_newPosition.x + _columns - 2);
                         _doors.Add(new Vector3(sideDown, 0, _newPosition.z));
                         _doors.Add(new Vector3(sideDown, 0, _newPosition.z -1));
@@ -91,16 +125,26 @@ public class BoardManager : MonoBehaviour
 
                 case 3: //Down
                     _newPosition.Set(_newPosition.x, 0, _newPosition.z - _rows);
-                    if (r != _nRooms - 1){
+                    for(int i=0; i < Positions.Count; i++){
+                        Debug.Log($"Value of i (left) : {i}");
+                        if(_newPosition == Positions[i]){
+                            coincidence = true;
+                            break;
+                        }
+                    }
+                    if(coincidence){
+                        r -= 1;
+                        break;
+                    }
+                    else if(r != _nRooms - 1){
                         int sideUp = Random.Range((int)_newPosition.x + 2, (int)_newPosition.x + _columns - 2);
                         _doors.Add(new Vector3(sideUp, 0, _newPosition.z + _rows - 1));
                         _doors.Add(new Vector3(sideUp, 0, _newPosition.z + _rows));
                     }
                     break;
             }
-            Positions.Add(_newPosition);
+            if(!coincidence) Positions.Add(_newPosition);
         }
-        Debug.Log(Positions);
 
         //Instantiate all
         for (int r = 0; r < _nRooms; r++){
