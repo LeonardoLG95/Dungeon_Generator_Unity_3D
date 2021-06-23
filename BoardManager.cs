@@ -52,7 +52,6 @@ public class BoardManager : MonoBehaviour
         Debug.Log($"Random number of rooms : {_nRooms}");
         if(MinDimension == MaxDimension) Dimension = MinDimension;
         else Dimension = Random.Range(MinDimension, MaxDimension);
-        Debug.Log($"Dimension {Dimension}");
         _rows = Dimension;
         _columns = Dimension;
         Positions.Add(_newPosition);
@@ -66,7 +65,6 @@ public class BoardManager : MonoBehaviour
                 case 0: //Left
                     _newPosition.Set(_newPosition.x - _columns, 0, _newPosition.z);
                     for(int i=0; i < Positions.Count; i++){
-                        Debug.Log($"Value of i (left) : {i}");
                         if(_newPosition == Positions[i]){
                             coincidence = true;
                             break;
@@ -86,7 +84,6 @@ public class BoardManager : MonoBehaviour
                 case 1: //Right
                     _newPosition.Set(_newPosition.x + _columns, 0, _newPosition.z);
                     for(int i=0; i < Positions.Count; i++){
-                        Debug.Log($"Value of i (left) : {i}");
                         if(_newPosition == Positions[i]){
                             coincidence = true;
                             break;
@@ -106,7 +103,6 @@ public class BoardManager : MonoBehaviour
                 case 2: //Up
                     _newPosition.Set(_newPosition.x, 0, _newPosition.z + _rows);
                     for(int i=0; i < Positions.Count; i++){
-                        Debug.Log($"Value of i (left) : {i}");
                         if(_newPosition == Positions[i]){
                             coincidence = true;
                             break;
@@ -126,7 +122,6 @@ public class BoardManager : MonoBehaviour
                 case 3: //Down
                     _newPosition.Set(_newPosition.x, 0, _newPosition.z - _rows);
                     for(int i=0; i < Positions.Count; i++){
-                        Debug.Log($"Value of i (left) : {i}");
                         if(_newPosition == Positions[i]){
                             coincidence = true;
                             break;
@@ -146,47 +141,57 @@ public class BoardManager : MonoBehaviour
             if(!coincidence) Positions.Add(_newPosition);
         }
 
+        foreach(Vector3 door in _doors){
+            Debug.Log($"Door in : {door}");
+        }
+
+        foreach(Vector3 position in Positions){
+            Debug.Log($"Position in : {position}");
+        }
         //Instantiate all
         for (int r = 0; r < _nRooms; r++){
             _gridPositions.Clear();
             _boardHolder = new GameObject($"Board {BoardN}").transform;
 
-            for (int x = (int)Positions[r].x; x < Positions[r].x + _columns; x++){
+            int roomX = (int)Positions[r].x;
+            int roomZ = (int)Positions[r].z;
 
-                for (int z = (int)Positions[r].z; z < Positions[r].z + _rows; z++){
+            for (int x = roomX; x < roomX + _columns; x++){
+
+                for (int z = roomZ; z < roomZ + _rows; z++){
 
                     GameObject toInstantiate = null;
                     //Floor
-                    if (x > Positions[r].x && x < Positions[r].x + _columns -1 && z > Positions[r].z && z < Positions[r].z + _rows - 1){
+                    if (x > roomX && x < roomX + _columns -1 && z > roomZ && z < roomZ + _rows - 1){
                         toInstantiate = Instantiate(FloorTiles[Random.Range(0, FloorTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
-                        if (x != 1 && z != 1 && x > Positions[r].x + 1 && 
+                        /*if (x != 1 && z != 1 && x > Positions[r].x + 1 && 
                             x < Positions[r].x + _columns - 2 && 
                             z > Positions[r].z + 1 && 
                             z < Positions[r].z + _rows - 2){
                                 _gridPositions.Add(new Vector3(x, 0, z));
-                        }
+                        }*/
                     }
-                    //Left Side
-                    else if (x == Positions[r].x && z != Positions[r].z && z != Positions[r].z + _rows -1){
-                        toInstantiate = _SideAssets(x, z, 90);               
+                    //Left wall
+                    else if (x == roomX && z != roomZ && z != roomZ + _rows - 1){
+                        toInstantiate = _Wall(x, roomX, z, roomZ, 90);               
                     }
-                    //Right Side
-                    else if (x == Positions[r].x + _columns -1 && z != Positions[r].z && z != Positions[r].z + _rows -1){
-                        toInstantiate = _SideAssets(x, z, -90);
+                    //Right wall
+                    else if (x == roomX + _columns -1 && z != roomZ && z != roomZ + _rows -1){
+                        toInstantiate = _Wall(x, roomX, z, roomZ, -90);
                     }
-                    //Down Side
-                    else if (z == Positions[r].z && x != Positions[r].x && x != Positions[r].x + _columns -1){
-                        toInstantiate = _SideAssets(x, z, 0);
+                    //Down wall
+                    else if (z == roomZ && x != roomX && x != roomX + _columns -1){
+                        toInstantiate = _Wall(x, roomX, z, roomZ, 0);
                     }
-                    //Up Side
-                    else if (z == Positions[r].z + _rows -1 && x != Positions[r].x && x != Positions[r].x + _columns -1){
-                        toInstantiate = _SideAssets(x, z, 0);
+                    //Up wall
+                    else if (z == roomZ + _rows -1 && x != roomX && x != roomX + _columns -1){
+                        toInstantiate = _Wall(x, roomX, z, roomZ, 0);
                     }
                     //Corners
                     else{
                         toInstantiate = Instantiate(WallCornerTiles[Random.Range(0, WallCornerTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
                     }
-                    toInstantiate.transform.SetParent(_boardHolder);
+                    if(toInstantiate) toInstantiate.transform.SetParent(_boardHolder);
                 }
             }
 
@@ -202,22 +207,31 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private GameObject _SideAssets(int x, int z, int yRotation){
+    private GameObject _Wall(int x, int roomX, int z, int roomZ, int yRotation){
         GameObject toInstatiate = null;
         for(int i = 0; i < _doors.Count; i++){
-            if (x == _doors[i].x && z == _doors[i].z){
-                toInstatiate = Instantiate(FloorTiles[Random.Range(0, WallTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
+            Vector3 door = _doors[i];
+            //Floor door
+            if (x == door.x && z == door.z){
+                return Instantiate(FloorTiles[Random.Range(0, FloorTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
             }
-            else if (x == _doors[i].x && z == _doors[i].z - 1){
-                toInstatiate = Instantiate(DoorCornerTiles[Random.Range(0, DoorCornerTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
+            //Right left door pillars, z axis (vertical walls)
+            else if (x == roomX || x == roomX + _columns - 1){
+                if ((x == door.x && z == door.z - 1) || (x == door.x && z == door.z + 1)){
+                    return Instantiate(DoorCornerTiles[Random.Range(0, DoorCornerTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
+                }
             }
-            else if (x == _doors[i].x && z == _doors[i].z + 1){
-                toInstatiate = Instantiate(DoorCornerTiles[Random.Range(0, DoorCornerTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
+            //Top down door pillars, x axis (horizontal walls)
+            else if (z == roomZ || z == roomZ + _rows - 1){
+                if ((x == door.x - 1 && z == door.z) || (x == door.x + 1 && z == door.z)){
+                    return Instantiate(DoorCornerTiles[Random.Range(0, DoorCornerTiles.Length)], new Vector3(x, 0, z), Quaternion.identity);
+                }
             }
+            
         }
-        if(!toInstatiate) toInstatiate = Instantiate(WallTiles[Random.Range(0, WallTiles.Length)], new Vector3(x, 0, z), Quaternion.Euler(0, yRotation, 0));
-
-        return toInstatiate;
+        //Wall
+        if(!toInstatiate) return Instantiate(WallTiles[Random.Range(0, WallTiles.Length)], new Vector3(x, 0, z), Quaternion.Euler(0, yRotation, 0));
+        else return null;
     }
 
     //Función para seleccionar las posiciones donde instanciar en las salas
