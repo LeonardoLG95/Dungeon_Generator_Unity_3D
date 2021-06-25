@@ -70,11 +70,7 @@ public class BoardManager : MonoBehaviour
                             break;
                         }
                     }
-                    if(coincidence){
-                        r -= 1;
-                        break;
-                    }
-                    else if(r != _nRooms - 1){
+                    if(!coincidence && r != _nRooms - 1){
                         int sideRight = Random.Range((int)_newPosition.z + 2, (int)_newPosition.z + _rows - 2);
                         _doors.Add(new Vector3(_newPosition.x + _columns - 1, 0, sideRight));
                         _doors.Add(new Vector3(_newPosition.x + _columns, 0, sideRight));
@@ -89,11 +85,7 @@ public class BoardManager : MonoBehaviour
                             break;
                         }
                     }
-                    if(coincidence){
-                        r -= 1;
-                        break;
-                    }
-                    else if(r != _nRooms - 1){
+                    if(!coincidence && r != _nRooms - 1){
                         int sideLeft = Random.Range((int)_newPosition.z + 2, (int)_newPosition.z + _rows - 2);
                         _doors.Add(new Vector3(_newPosition.x, 0, sideLeft));
                         _doors.Add(new Vector3(_newPosition.x - 1, 0, sideLeft));
@@ -108,11 +100,7 @@ public class BoardManager : MonoBehaviour
                             break;
                         }
                     }
-                    if(coincidence){
-                        r -= 1;
-                        break;
-                    }
-                    else if(r != _nRooms - 1){
+                    if(!coincidence && r != _nRooms - 1){
                         int sideDown = Random.Range((int)_newPosition.x + 2, (int)_newPosition.x + _columns - 2);
                         _doors.Add(new Vector3(sideDown, 0, _newPosition.z));
                         _doors.Add(new Vector3(sideDown, 0, _newPosition.z -1));
@@ -127,18 +115,18 @@ public class BoardManager : MonoBehaviour
                             break;
                         }
                     }
-                    if(coincidence){
-                        r -= 1;
-                        break;
-                    }
-                    else if(r != _nRooms - 1){
+                    if(!coincidence && r != _nRooms - 1){
                         int sideUp = Random.Range((int)_newPosition.x + 2, (int)_newPosition.x + _columns - 2);
                         _doors.Add(new Vector3(sideUp, 0, _newPosition.z + _rows - 1));
                         _doors.Add(new Vector3(sideUp, 0, _newPosition.z + _rows));
                     }
                     break;
             }
-            if(!coincidence) Positions.Add(_newPosition);
+            if(coincidence){
+                r -= 1;
+                continue;
+            }
+            Positions.Add(_newPosition);
         }
 
         foreach(Vector3 door in _doors){
@@ -231,24 +219,24 @@ public class BoardManager : MonoBehaviour
         }
         //Wall
         if(!toInstatiate) return Instantiate(WallTiles[Random.Range(0, WallTiles.Length)], new Vector3(x, 0, z), Quaternion.Euler(0, yRotation, 0));
-        else return null;
+        return null;
     }
 
     //Función para seleccionar las posiciones donde instanciar en las salas
-    private Vector3 _RandomPosition(){
+    /*private Vector3 _RandomPosition(){
         int randomIndex = Random.Range(0, _gridPositions.Count);
         Vector3 randomPosition = _gridPositions[randomIndex];
         _gridPositions.RemoveAt(randomIndex);
         return randomPosition;
-    }
+    }*/
 
     //Función para instanciar los objetos en las salas
-    private void _LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum){
+    /*private void _LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum){
         int objectCount = Random.Range(minimum, maximum + 1);
         for (int i = 0; i < objectCount; i++){
             Vector3 randomPosition = _RandomPosition();
             GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
             Instantiate(tileChoice, randomPosition, Quaternion.identity);
         }
-    }
+    }*/
 }
